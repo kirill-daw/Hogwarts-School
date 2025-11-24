@@ -2,48 +2,48 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.*;
 
 @Service
 public class StudentService {
-    private final Map<Long, Student> students = new HashMap<>();
-    private long id = 0;
+    private final StudentRepository studentRepository;
+
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     public Student createStudent(Student student) {
-        student.setId(++id);
-        students.put(student.getId(), student);
-        return student;
+        return studentRepository.save(student);
     }
 
     public Student getStudentById(Long id) {
-        return students.get(id);
+        return studentRepository.findById(id).orElse(null);
     }
 
     public Student updateStudent(Long id, Student student) {
-        if (!students.containsKey(id)) {
-            return null;
+        if (studentRepository.existsById(id)) {
+            student.setId(id);
+            return studentRepository.save(student);
         }
-        student.setId(id);
-        students.put(id, student);
-        return student;
+        return null;
     }
 
     public Student deleteStudent(Long id) {
-        return students.remove(id);
+        Optional<Student> student = studentRepository.findById(id);
+        if (student.isPresent()) {
+            studentRepository.deleteById(id);
+            return student.get();
+        }
+        return null;
     }
 
     public Collection<Student> getAllStudents() {
-        return Collections.unmodifiableCollection(students.values());
+        return studentRepository.findAll();
     }
 
     public Collection<Student> getStudentsByAge(int age) {
-        List<Student> result = new ArrayList<>();
-        for (Student student : students.values()) {
-            if (student.getAge() == age) {
-                result.add(student);
-            }
-        }
-        return result;
+        return studentRepository.findByAge(age);
     }
 }
