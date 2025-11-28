@@ -157,4 +157,40 @@ class StudentControllerWebMvcTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/student/{id}/faculty", STUDENT_ID))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void getTotalNumberOfStudents_shouldReturnCount() throws Exception {
+        when(studentService.getTotalNumberOfStudents()).thenReturn(100);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/student/count"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("100"));
+    }
+
+    @Test
+    void getAverageAge_shouldReturnAverage() throws Exception {
+        when(studentService.getAverageAge()).thenReturn(17.5);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/student/average-age"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("17.5"));
+    }
+
+    @Test
+    void getLastFiveStudents_shouldReturnFiveStudents() throws Exception {
+        Faculty faculty = new Faculty(FACULTY_ID, FACULTY_NAME, FACULTY_COLOR);
+        List<Student> students = Arrays.asList(
+                new Student(1L, "Студент 1", 17, faculty),
+                new Student(2L, "Студент 2", 18, faculty),
+                new Student(3L, "Студент 3", 16, faculty),
+                new Student(4L, "Студент 4", 19, faculty),
+                new Student(5L, "Студент 5", 17, faculty)
+        );
+        when(studentService.getLastFiveStudents()).thenReturn(students);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/student/last-five"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(5))
+                .andExpect(jsonPath("$[0].name").value("Студент 1"));
+    }
 }
