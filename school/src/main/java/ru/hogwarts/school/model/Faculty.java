@@ -1,6 +1,6 @@
 package ru.hogwarts.school.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -17,11 +17,11 @@ public class Faculty {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<Student> students = new ArrayList<>();
 
-    protected Faculty() {
+    public Faculty() {
     }
 
     public Faculty(Long id, String name, String color) {
@@ -67,7 +67,10 @@ public class Faculty {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Faculty faculty = (Faculty) o;
-        return Objects.equals(id, faculty.id) && Objects.equals(name, faculty.name) && Objects.equals(color, faculty.color);
+        return
+                Objects.equals(id, faculty.id)
+                        && Objects.equals(name, faculty.name)
+                        && Objects.equals(color, faculty.color);
     }
 
     @Override
