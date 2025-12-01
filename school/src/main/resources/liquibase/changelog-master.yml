@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/changelog/2025/11/000-create-tables.xml
+  - include:
+      file: liquibase/changelog/2025/11/001-create-student-name-index.xml
+  - include:
+      file: liquibase/changelog/2025/11/002-create-faculty-name-color-index.xml
