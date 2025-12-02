@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="000-create-tables" author="your-name">
+        <createTable tableName="faculties">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="color" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="students">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="age" type="INTEGER"/>
+            <column name="faculty_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="students"
+                baseColumnNames="faculty_id"
+                constraintName="fk_student_faculty"
+                referencedTableName="faculties"
+                referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>
