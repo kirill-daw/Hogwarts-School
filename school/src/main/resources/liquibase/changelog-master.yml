@@ -5,3 +5,5 @@ databaseChangeLog:
       file: liquibase/changelog/2025/11/001-create-student-name-index.xml
   - include:
       file: liquibase/changelog/2025/11/002-create-faculty-name-color-index.xml
+  - include:
+      file: liquibase/changelog/2025/11/003-create-avatars-table.xml

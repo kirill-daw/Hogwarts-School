@@ -12,6 +12,7 @@ import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -174,5 +175,39 @@ public class StudentService {
         List<Student> students = studentRepository.findLastFiveStudents();
         logger.debug("Found {} last students (max 5)", students.size());
         return students;
+    }
+
+    public List<String> getStudentsNamesStartingWithA() {
+        logger.info("Was invoked method for get students names starting with 'A'");
+
+        List<String> names = studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(name -> name != null && !name.isEmpty() &&
+                        (name.toUpperCase().startsWith("А") || name.toUpperCase().startsWith("A")))
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+
+        logger.debug("Found {} students names starting with 'A'", names.size());
+        return names;
+    }
+
+    public Double getAverageAgeUsingFindAll() {
+        logger.info("Was invoked method for get average age using findAll()");
+
+        List<Student> students = studentRepository.findAll();
+
+        if (students.isEmpty()) {
+            logger.warn("No students found in database");
+            return 0.0;
+        }
+
+        double averageAge = students.stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0);
+
+        logger.debug("Average age calculated using findAll: {}", averageAge);
+        return averageAge;
     }
 }
