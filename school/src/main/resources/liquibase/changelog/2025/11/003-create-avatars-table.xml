@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="003-create-avatars-table" author="your-name">
+        <createTable tableName="avatars">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="file_path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_size" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="media_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data" type="BYTEA">
+                <constraints nullable="false"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="avatars"
+                baseColumnNames="student_id"
+                constraintName="fk_avatar_student"
+                referencedTableName="students"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <createIndex
+                tableName="avatars"
+                indexName="idx_avatar_student_id">
+            <column name="student_id"/>
+        </createIndex>
+
+        <sql>
+            COMMENT ON TABLE avatars IS 'Таблица для хранения аватарок студентов';
+        </sql>
+        <sql>
+            COMMENT ON COLUMN avatars.file_path IS 'Путь к файлу на диске';
+            COMMENT ON COLUMN avatars.file_size IS 'Размер файла в байтах';
+            COMMENT ON COLUMN avatars.media_type IS 'MIME-тип файла (например, image/jpeg)';
+            COMMENT ON COLUMN avatars.data IS 'Бинарные данные файла';
+            COMMENT ON COLUMN avatars.student_id IS 'Ссылка на студента (One-to-One)';
+        </sql>
+    </changeSet>
+</databaseChangeLog>
